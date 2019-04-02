@@ -2,11 +2,12 @@ clear all;
 close all;
 %imgs = readMNIST('train-images.idx3-ubyte', 100, 0);
 
+readDigits = 10;
+offset = 0;
 
 fid = fopen('data0', 'r', 'b');
 for i = 1:10
 imgs(:,:,i) = fread(fid, [28 28], 'uchar');
-imgs(:,:,i) = imgs(:,:,i)./255.0;
 end
 
 %imgs = rescale(imgs, 0.75);
@@ -20,7 +21,7 @@ imshow(imgs(:,:,i))
 end
 
 %x = simplecluster_dataset;
-net = selforgmap([10 10],1000, 10, 'hextop');
+net = selforgmap([10 10],1000, 30, 'hextop');
 [net, tr] = train(net, imgs(:,:));
 
 

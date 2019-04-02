@@ -48,7 +48,7 @@ function imgs = readMNIST(imgFile, readDigits, offset)
     fclose(fid);
     
     % Calc avg digit and count
-    imgs = trimDigits(imgs, 4);
+    %imgs = trimDigits(imgs, 4);
     imgs = normalizePixValue(imgs);
     %[avg num stddev] = getDigitStats(imgs, labels);
     
