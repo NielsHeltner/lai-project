@@ -27,7 +27,7 @@ end
 for i=1:length(C)
     R(C(i, 1), C(i, 2)) = -100;
 end
-R(G(1),G(2))=100;
+R(G(1),G(2))=0;
 Q=zeros(w,h,4);% 4 = the four directions you can move in (movedir)
 
 move_to=[0 1; 0 -1; -1 0; 1 0];
@@ -46,9 +46,11 @@ for episode=1:n_episodes
         cla
         axis([0.5 w+0.5 0.5 h+0.5])
         hold on
-        for i=1:w+h
-            plot([i-0.5 i-0.5],[0.5 h+0.5]);
+        for i=1:h
             plot([0.5 w+0.5],[i-0.5 i-0.5]);
+        end;
+        for i=1:w
+            plot([i-0.5 i-0.5],[0.5 h+0.5]);
         end;
         plot(s(1,1),s(1,2),'g.','markersize',50);
         plot(G(1,1),G(1,2),'r.','markersize',50);
@@ -105,9 +107,11 @@ for episode=1:n_episodes
                 cla
                 axis([0.5 w+0.5 0.5 h+0.5])
                 hold on
-                for i=1:w+h
-                    plot([i-0.5 i-0.5],[0.5 h+0.5]);
+                for i=1:h
                     plot([0.5 w+0.5],[i-0.5 i-0.5]);
+                end;
+                for i=1:w
+                    plot([i-0.5 i-0.5],[0.5 h+0.5]);
                 end;
                 plot(G(1,1),G(1,2),'r.','markersize',50);
                 plot(s(t+1,1),s(t+1,2),'g.','markersize',50);
@@ -124,14 +128,16 @@ for episode=1:n_episodes
             
             for i=1:length(C)
                 if sum(abs(s(t+1,:) - C(i,:))) == 0 % fell off cliff
-                    disp("fell off cliff");
-                    PL(episode)=t;
+                    %disp("fell off cliff");
+                    s(t+1,:)=[1 1];
+                    %PL(episode)=t;
                     %break;
-                    running = false;
+                    %running = false;
                 end
             end
             if sum(abs(s(t+1,:) - G)) == 0 % reached goal
                 PL(episode)=t;
+                %disp("reached goal");
                 %break;
                 running = false;
             else
@@ -147,10 +153,14 @@ if showAnim==0
     figure
     axis([0.5 w+0.5 0.5 h+0.5])
     hold on
-    for i=1:w+h
-        plot([i-0.5 i-0.5],[0.5 h+0.5]);
+    
+    for i=1:h
         plot([0.5 w+0.5],[i-0.5 i-0.5]);
     end;
+    for i=1:w
+        plot([i-0.5 i-0.5],[0.5 h+0.5]);
+    end;
+    
     plot(G(1,1),G(1,2),'r.','markersize',50);
     for i1=1:w
         for i2=1:h
