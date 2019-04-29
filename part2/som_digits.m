@@ -4,6 +4,7 @@ close all hidden
 clear all hidden
 clc
 addpath('./somtoolbox/')
+
 showAnim=0; %set to 0 to disable animation
 
 N1=15; % number of output neurons per dimension
@@ -50,7 +51,8 @@ for i=1:10
 end;
 
 w=[];
-w=rand(N1,N2,D)*max(max(X)); 
+s = rng(1);
+w= rand(N1,N2,D)*max(max(X)); 
 figure
 colormap gray
 k=0;
@@ -137,3 +139,6 @@ colormap(flipud(gray));
 U = som_umat(w);
 ha = som_cplane('hexa',[29 29],U(:));
 set(ha,'edgecolor','none');
+
+mean_U = mean(mean(U).');
+disp(mean_U);
