@@ -3,7 +3,7 @@ clear all
 close all hidden
 clear all hidden
 clc
-
+addpath('./somtoolbox/')
 showAnim=0; %set to 0 to disable animation
 
 N1=15; % number of output neurons per dimension
@@ -21,8 +21,8 @@ alfa=alfa0;
 
 M=10; %number of samples per class
 
-k=0;
-for i=0:9
+k=0; 
+for i=0:9 
     fid=fopen(['data' num2str(i)],'r');
     for j=1:M
         k=k+1;
@@ -76,9 +76,9 @@ for t=1:T
     dist=[];
     for i=1:N1
         for j=1:N2
-            dist(i,j)=sqrt(sum([x(1,1,:)-w(i,j,:)].^2));
-%             cc=corrcoef(reshape(x(1,1,:),Nf,Nf),reshape(w(i,j,:),Nf,Nf));
-%             dist(i,j)=1-cc(1,2); 
+            %dist(i,j)=sqrt(sum([x(1,1,:)-w(i,j,:)].^2));
+             cc=corrcoef(reshape(x(1,1,:),Nf,Nf),reshape(w(i,j,:),Nf,Nf));
+             dist(i,j)=1-cc(1,2); 
         end;
     end;
 
@@ -131,3 +131,9 @@ for i=1:N1
         axis off
     end;
 end;
+
+figure(4)
+colormap(flipud(gray));
+U = som_umat(w);
+ha = som_cplane('hexa',[29 29],U(:));
+set(ha,'edgecolor','none');
