@@ -3,6 +3,7 @@ clear all
 close all hidden
 clear all hidden
 clc
+addpath('./somtoolbox/')
 
 showAnim=0; %set to 0 to disable animation
 
@@ -10,12 +11,12 @@ N1=15; % number of output neurons per dimension
 N2=15; % number of output neurons per dimension
 n=28; % number of pixels in original image nxn
 Nf=15;%number of input neurons NfxNf
-T=1000; % number of learning iterations
+T=2000; % number of learning iterations
 D=Nf*Nf;
 offs=2; %number of border pixels
 
 sigma0=7; %initial width of Gaussian neighbourhood function 
-alfa0=0.35; %initial learning rate
+alfa0=0.75; %initial learning rate
 sigma=sigma0;
 alfa=alfa0;
 
@@ -50,6 +51,7 @@ for i=1:10
 end;
 
 w=[];
+s = rng(1);
 w=rand(N1,N2,D)*max(max(X)); 
 figure
 colormap gray
@@ -76,9 +78,9 @@ for t=1:T
     dist=[];
     for i=1:N1
         for j=1:N2
-            dist(i,j)=sqrt(sum([x(1,1,:)-w(i,j,:)].^2));
-%             cc=corrcoef(reshape(x(1,1,:),Nf,Nf),reshape(w(i,j,:),Nf,Nf));
-%             dist(i,j)=1-cc(1,2); 
+            %dist(i,j)=sqrt(sum([x(1,1,:)-w(i,j,:)].^2));
+             cc=corrcoef(reshape(x(1,1,:),Nf,Nf),reshape(w(i,j,:),Nf,Nf));
+             dist(i,j)=1-cc(1,2); 
         end;
     end;
 
@@ -132,5 +134,13 @@ for i=1:N1
     end;
 end;
 
+figure(4)
+colormap(flipud(gray));
 U = som_umat(w);
-plot(U);
+ha = som_cplane('hexa',[29 29],U(:));
+set(ha,'edgecolor','none');
+
+mean_U = mean(mean(U).');
+%mean_U = mean_U.';
+%real_mean_U = mean(trans_U);
+disp(mean_U);
