@@ -10,7 +10,7 @@ g=0.7; %gamma
 
 epsilon=0.1;
 
-n_episodes=1000;
+n_episodes=500;
 
 w = 12; % grid size width
 h = 4;  % grid size height
@@ -27,15 +27,41 @@ end
 for i=1:length(C)
     R(C(i, 1), C(i, 2)) = -100;
 end
-R(G(1),G(2))=0;
+%R(G(1),G(2))=0;
 Q=zeros(w,h,4);% 4 = the four directions you can move in (movedir)
+for i=1:w
+    for j=1:h
+        for k=1:4
+            if k==1 % up
+                if j==h
+                    Q(i, j, k) = -100;
+                end
+            end
+            if k==2 % down
+                if j==1 && i == 1
+                    Q(i, j, k) = -100;
+                end
+            end
+            if k==3 % left
+                if i==1
+                    Q(i, j, k) = -100;
+                end
+            end
+            if k==4 % right
+                if i==w
+                    Q(i, j, k) = -100;
+                end
+            end
+        end
+    end
+end
 
 move_to=[0 1; 0 -1; -1 0; 1 0];
 
 E=linspace(epsilon,0,n_episodes);
 
 for episode=1:n_episodes
-
+    
     s=[];
     s(1,:)=[1 1];
     
@@ -130,9 +156,9 @@ for episode=1:n_episodes
                 if sum(abs(s(t+1,:) - C(i,:))) == 0 % fell off cliff
                     %disp("fell off cliff");
                     s(t+1,:)=[1 1];
-                    %PL(episode)=t;
+                    PL(episode)=t;
                     %break;
-                    %running = false;
+                    running = false;
                 end
             end
             if sum(abs(s(t+1,:) - G)) == 0 % reached goal
@@ -148,6 +174,17 @@ for episode=1:n_episodes
     end;
     %episode
 end;
+
+Q = normalize(Q, 'range');
+for i=1:w
+    for j=1:h
+        for k=1:4
+            if j==1 && i ~= 1
+                Q(i, j, k) = 0;
+            end
+        end
+    end
+end
 
 if showAnim==0
     figure
