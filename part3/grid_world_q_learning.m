@@ -6,11 +6,11 @@ clc
 showAnim=0;
 
 a=0.1; %alpha
-g=0.7; %gamma
+g=0.9; %gamma
 
 epsilon=0.1;
 
-n_episodes=500;
+n_episodes=1000;
 
 w = 12; % grid size width
 h = 4;  % grid size height
@@ -155,7 +155,7 @@ for episode=1:n_episodes
             for i=1:length(C)
                 if sum(abs(s(t+1,:) - C(i,:))) == 0 % fell off cliff
                     %disp("fell off cliff");
-                    s(t+1,:)=[1 1];
+                    %s(t+1,:)=[1 1];
                     PL(episode)=t;
                     %break;
                     running = false;
