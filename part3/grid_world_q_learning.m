@@ -27,7 +27,7 @@ end
 for i=1:length(C)
     R(C(i, 1), C(i, 2)) = -100;
 end
-R(G(1),G(2))=0;
+R(G(1),G(2))=100;
 Q=zeros(w,h,4);% 4 = the four directions you can move in (movedir)
 
 move_to=[0 1; 0 -1; -1 0; 1 0];
@@ -148,6 +148,9 @@ for episode=1:n_episodes
     end;
     %episode
 end;
+
+nom = normalize(Q, 'range');
+Q = nom;
 
 if showAnim==0
     figure
