@@ -3,12 +3,36 @@ close all
 clear all
 clc
 
+[cr1, pl1] = qlearn(0.1, false);
+[cr2, pl2] = qlearn(0.2, false);
+[cr3, pl3] = qlearn(0.2, true);
+
+figure
+bar(pl1)
+hold on
+bar(pl2)
+hold on
+bar(pl3)
+hold off
+legend('\epsilon: 0.1', '\epsilon: 0.2', '\epsilon: 0.2, decaying')
+
+figure
+plot(medfilt1(medfilt1(cr1)))
+hold on
+plot(medfilt1(medfilt1(cr2)))
+hold on
+plot(medfilt1(medfilt1(cr3)))
+hold off
+legend({'\epsilon: 0.1', '\epsilon: 0.2', '\epsilon: 0.2, decaying'}, 'Location', 'southeast')
+
+function [CR, PL] = qlearn(epsilon, decay)
+
 showAnim=0;
 
 a=0.1; %alpha
 g=0.9; %gamma
 
-epsilon=0.1;
+%epsilon=0.1;
 
 n_episodes=1000;
 
@@ -68,7 +92,9 @@ for episode=1:n_episodes
     s=[];
     s(1,:)=[1 1];
     
-    %epsilon=E(episode);
+    if decay == true
+        epsilon=E(episode);
+    end
     
     if showAnim==1
         figure(1)
@@ -214,9 +240,4 @@ end;
 
 figure(1)
 plot(s(:,1),s(:,2),'g','linewidth',2)
-
-figure
-bar(PL)
-
-figure
-plot(medfilt1(medfilt1(CR)))
+end
