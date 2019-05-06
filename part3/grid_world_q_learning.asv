@@ -3,7 +3,7 @@ close all
 clear all
 clc
 
-disp('sarsa');
+disp('q-learning');
 
 cr1s = [];
 cr2s = [];
@@ -12,21 +12,17 @@ pl1s = [];
 pl2s = [];
 pl3s = [];
 n_experiments = 20;
-wh=waitbar(0,'Running experiments...');
 for i=1:n_experiments
-    [cr1, pl1] = sarsa(0.2, false);
+    [cr1, pl1] = qlearn(0.2, false);
     cr1s(i,:) = cr1;
     pl1s(i,:) = pl1;
-    [cr2, pl2] = sarsa(0.2, true);
+    [cr2, pl2] = qlearn(0.1, false);
     cr2s(i,:) = cr2;
     pl2s(i,:) = pl2;
-    [cr3, pl3] = sarsa(0.1, false);
+    [cr3, pl3] = qlearn(0.2, true);
     cr3s(i,:) = cr3;
     pl3s(i,:) = pl3;
-    
-    waitbar(i/n_experiments, wh);
 end
-close(wh);
 
 disp("plotting");
 
@@ -40,26 +36,28 @@ hold off
 title('Path length per episode')
 xlabel('Episodes')
 ylabel('Path length')
-legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'northeast')
+legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'northeast')
 
 figure
-plot(median(cr1s))
+plot(medfilt1(medfit1(median(cr1s))))
 hold on
-plot(median(cr2s))
+plot(medfilt1(medfilt1(median(cr2s))))
 hold on
-plot(median(cr3s))
+plot(medfilt1(medfilt1(median(cr3s))))
 hold off
 title('Cumulative reward per episode')
 xlabel('Episodes')
 ylabel('Cumulative reward')
-legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'southeast')
+legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'southeast')
 
+%medfilt1(medfilt1 på cr
 
-function [CR, PL] = sarsa(epsilon, decay)
+function [CR, PL] = qlearn(epsilon, decay)
+
 showAnim=0;
 
 a=0.1; %alpha
-g=0.7; %gamma
+g=0.9; %gamma
 
 %epsilon=0.1;
 
@@ -113,15 +111,16 @@ move_to=[0 1; 0 -1; -1 0; 1 0];
 
 E=linspace(epsilon,0,n_episodes);
 
+
 for episode=1:n_episodes
     
     CR(episode) = 0;
-
+    
     s=[];
     s(1,:)=[1 1];
     
     if decay == true
-        epsilon=E(episode); %epsilon decays from initial value to 0
+        epsilon=E(episode);
     end
     
     if showAnim==1
@@ -170,26 +169,21 @@ for episode=1:n_episodes
             
             dmov=s(t+1,:)-s(t,:);
             if dmov(1)==0 && dmov(2)==1
-                movdir(t)=1;
+                movdir=1;
             elseif dmov(1)==0 && dmov(2)==-1
-                movdir(t)=2;
+                movdir=2;
             elseif dmov(1)==-1 && dmov(2)==0
-                movdir(t)=3;
+                movdir=3;
             elseif dmov(1)==1 && dmov(2)==0
-                movdir(t)=4;
+                movdir=4;
             else
-                movdir(t)=0;
-            end;                 
+                movdir=0;
+            end;
             
-            if t>1
-                if movdir(t)~=0  && movdir(t-1)~=0
-                    Qa=Q(s(t,1),s(t,2),movdir(t));
-                    Qt=Q(s(t-1,1),s(t-1,2),movdir(t-1));
-                    Q(s(t-1,1),s(t-1,2),movdir(t-1))=Qt + a*(R(s(t,1),s(t,2))+g*Qa-Qt);
-                    CR(episode) = CR(episode) + R(s(t,1),s(t,2));
-                end;
-            end;           
-
+            if movdir~=0               
+                Q(s(t,1),s(t,2),movdir)=Q(s(t,1),s(t,2),movdir) + a*(R(s(t+1,1),s(t+1,2))+g*max(Q(s(t+1,1),s(t+1,2),:))-Q(s(t,1),s(t,2),movdir));
+                CR(episode) = CR(episode) + R(s(t+1,1),s(t+1,2));
+            end;
             
             if showAnim==1
                 figure(1)
@@ -214,24 +208,19 @@ for episode=1:n_episodes
                 end;
             end;
             %pause(0.001)
-
+            
             for i=1:length(C)
                 if sum(abs(s(t+1,:) - C(i,:))) == 0 % fell off cliff
-                    Qt=Q(s(t,1),s(t,2),movdir(t));
-                    Q(s(t,1),s(t,2),movdir(t))=Qt + a*(R(s(t+1,1),s(t+1,2))-Qt);
-                    CR(episode) = CR(episode) + R(s(t+1,1),s(t+1,2));
-                    
+                    %disp("fell off cliff");
+                    %s(t+1,:)=[1 1];
                     PL(episode)=t;
                     %break;
                     running = false;
                 end
             end
             if sum(abs(s(t+1,:) - G)) == 0 % reached goal
-                Qt=Q(s(t,1),s(t,2),movdir(t));
-                Q(s(t,1),s(t,2),movdir(t))=Qt + a*(R(s(t+1,1),s(t+1,2))-Qt);
-                CR(episode) = CR(episode) + R(s(t+1,1),s(t+1,2));
-                
                 PL(episode)=t;
+                %disp("reached goal");
                 %break;
                 running = false;
             else

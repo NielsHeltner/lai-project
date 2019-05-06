@@ -3,27 +3,58 @@ close all
 clear all
 clc
 
-[cr1, pl1] = qlearn(0.1, false);
-[cr2, pl2] = qlearn(0.2, false);
-[cr3, pl3] = qlearn(0.2, true);
+disp('q-learning');
+
+cr1s = [];
+cr2s = [];
+cr3s = [];
+pl1s = [];
+pl2s = [];
+pl3s = [];
+n_experiments = 20;
+wh=waitbar(0,'Running experiments...');
+for i=1:n_experiments
+    [cr1, pl1] = qlearn(0.2, false);
+    cr1s(i,:) = cr1;
+    pl1s(i,:) = pl1;
+    [cr2, pl2] = qlearn(0.2, true);
+    cr2s(i,:) = cr2;
+    pl2s(i,:) = pl2;
+    [cr3, pl3] = qlearn(0.1, false);
+    cr3s(i,:) = cr3;
+    pl3s(i,:) = pl3;
+    
+    waitbar(i/n_experiments, wh);
+end
+close(wh);
+
+disp("plotting");
 
 figure
-bar(pl1)
+bar(median(pl1s))
 hold on
-bar(pl2)
+bar(median(pl2s))
 hold on
-bar(pl3)
+bar(median(pl3s))
 hold off
-legend('\epsilon: 0.1', '\epsilon: 0.2', '\epsilon: 0.2, decaying')
+title('Path length per episode')
+xlabel('Episodes')
+ylabel('Path length')
+legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'northeast')
 
 figure
-plot(medfilt1(medfilt1(cr1)))
+plot(median(cr1s))
 hold on
-plot(medfilt1(medfilt1(cr2)))
+plot(median(cr2s))
 hold on
-plot(medfilt1(medfilt1(cr3)))
+plot(median(cr3s))
 hold off
-legend({'\epsilon: 0.1', '\epsilon: 0.2', '\epsilon: 0.2, decaying'}, 'Location', 'southeast')
+title('Cumulative reward per episode')
+xlabel('Episodes')
+ylabel('Cumulative reward')
+legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'southeast')
+
+%medfilt1(medfilt1 på cr
 
 function [CR, PL] = qlearn(epsilon, decay)
 
@@ -215,7 +246,7 @@ for i=1:w
         end
     end
 end
-
+%{
 if showAnim==0
     figure
     axis([0.5 w+0.5 0.5 h+0.5])
@@ -240,4 +271,5 @@ end;
 
 figure(1)
 plot(s(:,1),s(:,2),'g','linewidth',2)
+%}
 end
