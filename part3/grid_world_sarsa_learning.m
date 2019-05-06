@@ -6,7 +6,7 @@ clc
 showAnim=0;
 
 a=0.1; %alpha
-g=0.9; %gamma
+g=0.7; %gamma
 
 epsilon=0.1;
 
@@ -61,6 +61,8 @@ move_to=[0 1; 0 -1; -1 0; 1 0];
 E=linspace(epsilon,0,n_episodes);
 
 for episode=1:n_episodes
+    
+    CR(episode) = 0;
 
     s=[];
     s(1,:)=[1 1];
@@ -129,6 +131,7 @@ for episode=1:n_episodes
                     Qa=Q(s(t,1),s(t,2),movdir(t));
                     Qt=Q(s(t-1,1),s(t-1,2),movdir(t-1));
                     Q(s(t-1,1),s(t-1,2),movdir(t-1))=Qt + a*(R(s(t,1),s(t,2))+g*Qa-Qt);
+                    CR(episode) = CR(episode) + R(s(t,1),s(t,2));
                 end;
             end;           
 
@@ -161,6 +164,7 @@ for episode=1:n_episodes
                 if sum(abs(s(t+1,:) - C(i,:))) == 0 % fell off cliff
                     Qt=Q(s(t,1),s(t,2),movdir(t));
                     Q(s(t,1),s(t,2),movdir(t))=Qt + a*(R(s(t+1,1),s(t+1,2))-Qt);
+                    CR(episode) = CR(episode) + R(s(t+1,1),s(t+1,2));
                     
                     PL(episode)=t;
                     %break;
@@ -170,6 +174,7 @@ for episode=1:n_episodes
             if sum(abs(s(t+1,:) - G)) == 0 % reached goal
                 Qt=Q(s(t,1),s(t,2),movdir(t));
                 Q(s(t,1),s(t,2),movdir(t))=Qt + a*(R(s(t+1,1),s(t+1,2))-Qt);
+                CR(episode) = CR(episode) + R(s(t+1,1),s(t+1,2));
                 
                 PL(episode)=t;
                 %break;
@@ -221,3 +226,6 @@ plot(s(:,1),s(:,2),'g','linewidth',2)
 
 figure
 bar(PL)
+
+figure
+plot(CR)

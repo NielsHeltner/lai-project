@@ -60,7 +60,10 @@ move_to=[0 1; 0 -1; -1 0; 1 0];
 
 E=linspace(epsilon,0,n_episodes);
 
+
 for episode=1:n_episodes
+    
+    CR(episode) = 0;
     
     s=[];
     s(1,:)=[1 1];
@@ -126,6 +129,7 @@ for episode=1:n_episodes
             
             if movdir~=0               
                 Q(s(t,1),s(t,2),movdir)=Q(s(t,1),s(t,2),movdir) + a*(R(s(t+1,1),s(t+1,2))+g*max(Q(s(t+1,1),s(t+1,2),:))-Q(s(t,1),s(t,2),movdir));
+                CR(episode) = CR(episode) + R(s(t+1,1),s(t+1,2));
             end;
             
             if showAnim==1
@@ -213,3 +217,6 @@ plot(s(:,1),s(:,2),'g','linewidth',2)
 
 figure
 bar(PL)
+
+figure
+plot(medfilt1(medfilt1(CR)))
