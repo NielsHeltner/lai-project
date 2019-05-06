@@ -25,10 +25,10 @@ Nf=10;%number of input neurons NfxNf
 T=5000; % number of learning iterations
 D=Nf*Nf;
 offs=2; %number of border pixels
-threshold = 0.0000000010;
+threshold = 0.000000001;
 
-sigma0=3; %initial width of Gaussian neighbourhood function 
-alfa0=0.3; %initial learning rate
+sigma0=7; %initial width of Gaussian neighbourhood function 
+alfa0=0.75; %initial learning rate
 sigma=sigma0;
 alfa=alfa0;
 
@@ -66,8 +66,14 @@ for i=1:10
 end;
 
 w=[];
-%s = rng(1);
-w = rand(N1,N2,D)*max(max(X)); 
+w= rand(N1,N2,D)*max(max(X)); 
+for i=1:100
+    for ii=1:10
+        for jj=1:10
+            w(ii,jj,i) = X(randi(10000));
+        end
+    end
+end
 figure
 colormap gray
 k=0;
@@ -126,7 +132,7 @@ while running
 
     if showAnim==1
         k=0;
-        %figure(3)
+        figure(3)
         cla
         colormap gray
         for i=1:N1
