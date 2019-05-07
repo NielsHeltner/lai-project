@@ -7,15 +7,17 @@ addpath('./somtoolbox/')
 
 
 % means = [];
+% iterations = []
 % for i=1:10
-%     [mean, T] = som();
+%     [mean, t] = som();
 %     means(i) = mean;
+%     iterations(i) = t;
 % end
 % figure
-% plot(means)
+% plot(means, iterations)
 
 
-%function [mean_U, T] = som()
+%function [mean_U, t] = som()
 showAnim=0; %set to 0 to disable animation
 
 N1=10; % number of output neurons per dimension
@@ -70,7 +72,7 @@ w= rand(N1,N2,D)*max(max(X));
 for i=1:100
     for ii=1:10
         for jj=1:10
-            w(ii,jj,i) = X(randi(10000));
+            w(ii,jj,i) = X (randi(10000));
         end
     end
 end

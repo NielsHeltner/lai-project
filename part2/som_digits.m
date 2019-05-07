@@ -7,12 +7,14 @@ addpath('./somtoolbox/')
 
 
 % means = [];
+% iterations = []
 % for i=1:10
-%     [mean, T] = som();
+%     [mean, t] = som();
 %     means(i) = mean;
+%     iterations(i) = t;
 % end
 % figure
-% plot(means)
+% plot(means, iterations)
 
 
 %function [mean_U, T] = som()
