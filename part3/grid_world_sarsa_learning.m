@@ -17,10 +17,10 @@ for i=1:n_experiments
     [cr1, pl1] = sarsa(0.2, false);
     cr1s(i,:) = cr1;
     pl1s(i,:) = pl1;
-    [cr2, pl2] = sarsa(0.2, true);
+    [cr2, pl2] = sarsa(0.1, false);
     cr2s(i,:) = cr2;
     pl2s(i,:) = pl2;
-    [cr3, pl3] = sarsa(0.1, false);
+    [cr3, pl3] = sarsa(0.2, true);
     cr3s(i,:) = cr3;
     pl3s(i,:) = pl3;
     
@@ -31,28 +31,28 @@ close(wh);
 disp("plotting");
 
 figure
-bar(median(pl1s))
+bar(median(pl1s), 'FaceColor', [0, 0.4470, 0.7410])
 hold on
-bar(median(pl2s))
+bar(median(pl2s), 'FaceColor', [0.9290, 0.6940, 0.1250])
 hold on
-bar(median(pl3s))
+bar(median(pl3s), 'FaceColor', [0.8500, 0.3250, 0.0980])
 hold off
 title('Path length per episode')
 xlabel('Episodes')
 ylabel('Path length')
-legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'northeast')
+legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'northeast')
 
 figure
-plot(median(cr1s))
+plot(median(cr1s), 'Color', [0, 0.4470, 0.7410])
 hold on
-plot(median(cr2s))
+plot(median(cr2s), 'Color', [0.9290, 0.6940, 0.1250])
 hold on
-plot(median(cr3s))
+plot(median(cr3s), 'Color', [0.8500, 0.3250, 0.0980])
 hold off
 title('Cumulative reward per episode')
 xlabel('Episodes')
 ylabel('Cumulative reward')
-legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'southeast')
+legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'southeast')
 
 
 function [CR, PL] = sarsa(epsilon, decay)
