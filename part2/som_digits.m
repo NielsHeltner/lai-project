@@ -5,22 +5,39 @@ clear all hidden
 clc
 addpath('./somtoolbox/')
 
+
+% means = [];
+% iterations = []
+% for i=1:10
+%     [mean, t] = som();
+%     means(i) = mean;
+%     iterations(i) = t;
+% end
+% figure
+% plot(means, iterations)
+
+
+%function [mean_U, T] = som()
 showAnim=0; %set to 0 to disable animation
 
-N1=15; % number of output neurons per dimension
-N2=15; % number of output neurons per dimension
+N1=10; % number of output neurons per dimension
+N2=10; % number of output neurons per dimension
 n=28; % number of pixels in original image nxn
-Nf=15;%number of input neurons NfxNf
-T=1000; % number of learning iterations
+Nf=10;%number of input neurons NfxNf
+T=5000; % number of learning iterations
 D=Nf*Nf;
 offs=2; %number of border pixels
+threshold = 0.000000001;
 
-sigma0=7; %initial width of Gaussian neighbourhood function 
-alfa0=0.75; %initial learning rate
+sigma0=3; %initial width of Gaussian neighbourhood function 
+alfa0=0.3; %initial learning rate
 sigma=sigma0;
 alfa=alfa0;
 
 M=10; %number of samples per class
+
+
+
 
 k=0; 
 for i=0:9 
@@ -51,7 +68,7 @@ for i=1:10
 end;
 
 w=[];
-s = rng(1);
+%s = rng(1);
 w= rand(N1,N2,D)*max(max(X)); 
 figure
 colormap gray
@@ -67,7 +84,9 @@ end;
 %pause
 
 wh=waitbar(0,'Please wait... Learning');
-for t=1:T
+running = true;
+t = 1;
+while running
     
     ind=randperm(size(X,1));
     ind=ind(1);
@@ -89,10 +108,16 @@ for t=1:T
     [XX,YY] = meshgrid(1:1:N2, 1:1:N1);
     h(:,:,1)=exp(-((XX-J(1)).^2+(YY-I(1)).^2)/sigma^2);
 
-    for d=1:D
-        w(:,:,d)=w(:,:,d)+(alfa*h).*(x(1,1,d)-w(:,:,d));
-    end;   
     
+    
+    for d=1:D
+        weight_change = (alfa*h).*(x(1,1,d)-w(:,:,d));
+        w(:,:,d)=w(:,:,d)+weight_change;
+        if abs(mean(mean(weight_change))) < threshold
+            disp('threshold hit');
+            running = false;
+        end
+    end;   
     if alfa>0.01
 	    alfa=alfa-alfa0/T;
     end;
@@ -103,7 +128,7 @@ for t=1:T
 
     if showAnim==1
         k=0;
-        figure(3)
+        %figure(3)
         cla
         colormap gray
         for i=1:N1
@@ -116,11 +141,17 @@ for t=1:T
         end;
         pause(0.001)
     end;
-    
 	waitbar(t/T,wh);
-end;
-close(wh);
 
+    if t >= T
+        disp('t > T');
+        running = false;
+    else
+        t = t + 1;
+    end
+end;
+disp(t);
+close(wh);
 figure(3)
 cla
 colormap gray
@@ -137,8 +168,11 @@ end;
 figure(4)
 colormap(flipud(gray));
 U = som_umat(w);
-ha = som_cplane('hexa',[29 29],U(:));
+ha = som_cplane('hexa',[19 19],U(:));
 set(ha,'edgecolor','none');
+
 
 mean_U = mean(mean(U).');
 disp(mean_U);
+%end
+
