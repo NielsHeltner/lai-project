@@ -17,10 +17,10 @@ for i=1:n_experiments
     [cr1, pl1] = qlearn(0.2, false);
     cr1s(i,:) = cr1;
     pl1s(i,:) = pl1;
-    [cr2, pl2] = qlearn(0.2, true);
+    [cr2, pl2] = qlearn(0.1, false);
     cr2s(i,:) = cr2;
     pl2s(i,:) = pl2;
-    [cr3, pl3] = qlearn(0.1, false);
+    [cr3, pl3] = qlearn(0.2, true);
     cr3s(i,:) = cr3;
     pl3s(i,:) = pl3;
     
@@ -31,28 +31,28 @@ close(wh);
 disp("plotting");
 
 figure
-bar(median(pl1s))
+plot(mean(pl1s))
 hold on
-bar(median(pl2s))
+plot(mean(pl2s))
 hold on
-bar(median(pl3s))
+plot(mean(pl3s), 'Color', [0.4660, 0.6740, 0.1880])
 hold off
 title('Path length per episode')
 xlabel('Episodes')
 ylabel('Path length')
-legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'northeast')
+legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'northeast')
 
 figure
-plot(median(cr1s))
+plot(mean(cr1s))
 hold on
-plot(median(cr2s))
+plot(mean(cr2s))
 hold on
-plot(median(cr3s))
+plot(mean(cr3s), 'Color', [0.4660, 0.6740, 0.1880])
 hold off
 title('Cumulative reward per episode')
 xlabel('Episodes')
 ylabel('Cumulative reward')
-legend({'\epsilon: 0.2', '\epsilon: 0.2, decaying', '\epsilon: 0.1'}, 'Location', 'southeast')
+legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'southeast')
 
 %medfilt1(medfilt1 på cr
 
