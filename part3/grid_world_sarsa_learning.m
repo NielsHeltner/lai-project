@@ -31,11 +31,11 @@ close(wh);
 disp("plotting");
 
 figure
-bar(median(pl1s), 'FaceColor', [0, 0.4470, 0.7410])
+plot(median(pl1s))
 hold on
-bar(median(pl2s), 'FaceColor', [0.9290, 0.6940, 0.1250])
+plot(median(pl2s))
 hold on
-bar(median(pl3s), 'FaceColor', [0.8500, 0.3250, 0.0980])
+plot(median(pl3s), 'Color', [0.4660, 0.6740, 0.1880])
 hold off
 title('Path length per episode')
 xlabel('Episodes')
@@ -43,11 +43,11 @@ ylabel('Path length')
 legend({'\epsilon: 0.2', '\epsilon: 0.1', '\epsilon: 0.2, decaying'}, 'Location', 'northeast')
 
 figure
-plot(median(cr1s), 'Color', [0, 0.4470, 0.7410])
+plot(median(cr1s))
 hold on
-plot(median(cr2s), 'Color', [0.9290, 0.6940, 0.1250])
+plot(median(cr2s))
 hold on
-plot(median(cr3s), 'Color', [0.8500, 0.3250, 0.0980])
+plot(median(cr3s), 'Color', [0.4660, 0.6740, 0.1880])
 hold off
 title('Cumulative reward per episode')
 xlabel('Episodes')
