@@ -59,7 +59,7 @@ function [CR, PL] = sarsa(epsilon, decay)
 showAnim=0;
 
 a=0.1; %alpha
-g=0.7; %gamma
+g=0.9; %gamma
 
 %epsilon=0.1;
 
