@@ -6,18 +6,21 @@ clc
 addpath('./somtoolbox/')
 
 
-% means = [];
-% iterations = []
-% for i=1:10
-%     [mean, t] = som();
-%     means(i) = mean;
-%     iterations(i) = t;
-% end
-% figure
-% plot(means, iterations)
+means = [];
+iterations = [];
+for i=1:10
+    [mean, t] = som();
+    means(i) = mean;
+    iterations(i) = t;
+end
+figure
+scatter(iterations, means)
+title('Mean of the U-Matrix')
+ylabel('Mean')
+xlabel('Iterations')
 
 
-%function [mean_U, T] = som()
+function [mean_U, t] = som()
 showAnim=0; %set to 0 to disable animation
 
 N1=10; % number of output neurons per dimension
@@ -29,8 +32,8 @@ D=Nf*Nf;
 offs=2; %number of border pixels
 threshold = 0.000000001;
 
-sigma0=3; %initial width of Gaussian neighbourhood function 
-alfa0=0.3; %initial learning rate
+sigma0=7; %initial width of Gaussian neighbourhood function 
+alfa0=0.75; %initial learning rate
 sigma=sigma0;
 alfa=alfa0;
 
@@ -55,30 +58,30 @@ for i=0:9
     fclose(fid);
 end;
         
-figure
-colormap gray
+%figure
+%colormap gray
 k=0;
 for i=1:10
     for j=1:10
         k=k+1;
-        subplot(10,10,k)
-        imagesc(reshape(X(k,:),Nf,Nf))
-        axis off
+        %subplot(10,10,k)
+        %imagesc(reshape(X(k,:),Nf,Nf))
+        %axis off
     end;
 end;
 
 w=[];
 %s = rng(1);
 w= rand(N1,N2,D)*max(max(X)); 
-figure
-colormap gray
+%figure
+%colormap gray
 k=0;
 for i=1:N1
     for j=1:N2
         k=k+1;
-        subplot(N1,N2,k)
-        imagesc(reshape(w(i,j,:),Nf,Nf))
-        axis off
+        %subplot(N1,N2,k)
+        %imagesc(reshape(w(i,j,:),Nf,Nf))
+        %axis off
     end;
 end;
 %pause
@@ -152,27 +155,27 @@ while running
 end;
 disp(t);
 close(wh);
-figure(3)
-cla
-colormap gray
+%figure(3)
+%cla
+%colormap gray
 k=0;
 for i=1:N1
     for j=1:N2
         k=k+1;
-        subplot(N1,N2,k)
-        imagesc(reshape(w(i,j,:),Nf,Nf))
-        axis off
+        %subplot(N1,N2,k)
+        %imagesc(reshape(w(i,j,:),Nf,Nf))
+        %axis off
     end;
 end;
 
-figure(4)
-colormap(flipud(gray));
+%figure(4)
+%colormap(flipud(gray));
 U = som_umat(w);
-ha = som_cplane('hexa',[19 19],U(:));
-set(ha,'edgecolor','none');
+%ha = som_cplane('hexa',[19 19],U(:));
+%set(ha,'edgecolor','none');
 
 
 mean_U = mean(mean(U).');
-disp(mean_U);
-%end
+%disp(mean_U);
+end
 

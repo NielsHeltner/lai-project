@@ -6,18 +6,20 @@ clc
 addpath('./somtoolbox/')
 
 
-% means = [];
-% iterations = []
-% for i=1:10
-%     [mean, t] = som();
-%     means(i) = mean;
-%     iterations(i) = t;
-% end
-% figure
-% plot(means, iterations)
+means = [];
+iterations = [];
+for i=1:10
+    [mean, t] = som();
+    means(i) = mean;
+    iterations(i) = t;
+end
+figure
+scatter(iterations, means)
+title('Mean of the U-Matrix')
+ylabel('Mean')
+xlabel('Iterations')
 
-
-%function [mean_U, t] = som()
+function [mean_U, t] = som()
 showAnim=0; %set to 0 to disable animation
 
 N1=10; % number of output neurons per dimension
@@ -55,20 +57,20 @@ for i=0:9
     fclose(fid);
 end;
         
-figure
-colormap gray
+%figure
+%colormap gray
 k=0;
 for i=1:10
     for j=1:10
         k=k+1;
-        subplot(10,10,k)
-        imagesc(reshape(X(k,:),Nf,Nf))
-        axis off
+        %subplot(10,10,k)
+        %imagesc(reshape(X(k,:),Nf,Nf))
+        %axis off
     end;
 end;
 
 w=[];
-w= rand(N1,N2,D)*max(max(X)); 
+%w= rand(N1,N2,D)*max(max(X)); 
 for i=1:100
     for ii=1:10
         for jj=1:10
@@ -76,15 +78,15 @@ for i=1:100
         end
     end
 end
-figure
-colormap gray
+%figure
+%colormap gray
 k=0;
 for i=1:N1
     for j=1:N2
         k=k+1;
-        subplot(N1,N2,k)
-        imagesc(reshape(w(i,j,:),Nf,Nf))
-        axis off
+        %subplot(N1,N2,k)
+        %imagesc(reshape(w(i,j,:),Nf,Nf))
+        %axis off
     end;
 end;
 %pause
@@ -158,28 +160,28 @@ while running
 end;
 disp(t);
 close(wh);
-figure(3)
-cla
-colormap gray
+%figure(3)
+%cla
+%colormap gray
 k=0;
 for i=1:N1
     for j=1:N2
         k=k+1;
-        subplot(N1,N2,k)
-        imagesc(reshape(w(i,j,:),Nf,Nf))
-        axis off
+        %subplot(N1,N2,k)
+        %imagesc(reshape(w(i,j,:),Nf,Nf))
+        %axis off
     end;
 end;
 
-figure(4)
-colormap(flipud(gray));
+%figure(4)
+%colormap(flipud(gray));
 U = som_umat(w);
-ha = som_cplane('hexa',[19 19],U(:));
-set(ha,'edgecolor','none');
+%ha = som_cplane('hexa',[19 19],U(:));
+%set(ha,'edgecolor','none');
 
 
 mean_U = mean(mean(U).');
 disp('mean of u-matrix');
 disp(mean_U);
-%end
+end
 
